@@ -9,7 +9,7 @@ var __ALHF_DICT_ADDR__;
 var __ALHF_DESERIALIZE_IDX__;
 var __ALHF_DESERIALIZE_ELEM__;
 
-list __ALHF_RETURN_ARRAY__;
+list __ALHF_ARRAY__;
 list __ALHF_PATH__;
 list __ALHF_DATA__;
 
@@ -40,14 +40,14 @@ func ALHF_GET_PATH(__ALHF_PATH__) {
         local __LEN_RETURN_ARRAY = __ALHF_DATA__[(__ALHF_ADDR__ + 1)];
         local __I_RETURN_ARRAY = 2;
         
-        delete __ALHF_RETURN_ARRAY__;
+        delete __ALHF_ARRAY__;
         
         repeat __LEN_RETURN_ARRAY {
-            add __ALHF_DATA__[(__ALHF_ADDR__ + __I_RETURN_ARRAY)] to __ALHF_RETURN_ARRAY__;
+            add __ALHF_DATA__[(__ALHF_ADDR__ + __I_RETURN_ARRAY)] to __ALHF_ARRAY__;
             __I_RETURN_ARRAY++;
         }
 
-        return "";
+        return "<array>";
     }
 
     return __ALHF_DATA__[__ALHF_ADDR__];
@@ -143,7 +143,17 @@ proc ALHF_SET_PATH __ALHF_PATH__, __ALHF_VALUE__ {
     __ALHF_VALUE__ = "";
     __ALHF_ADDR__ = "";
     __ALHF_SEARCH__ 1, 1;
-    __ALHF_DATA__[__ALHF_ADDR__] = $__ALHF_VALUE__;
+    repeat __ALHF_DATA__[(__ALHF_ADDR__ + 1)] {
+        delete __ALHF_DATA__[(__ALHF_ADDR__ + 2)];
+    }
+    __ALHF_DATA__[(__ALHF_ADDR__ + 1)] = length __ALHF_ARRAY__;
+    local __I_SET_ARRAY = length __ALHF_ARRAY__;
+    repeat length __ALHF_ARRAY__ {
+        insert __ALHF_ARRAY__[__I_SET_ARRAY] at __ALHF_DATA__[(__ALHF_ADDR__ + 2)]
+        __I_SET_ARRAY--;
+    }
+
+    __ALHF_DATA__[(__ALHF_ADDR__ + 2)]
 }
 
 proc ALHF_DESERIALIZE __ALHF_SERIALIZED_DATA__ {
