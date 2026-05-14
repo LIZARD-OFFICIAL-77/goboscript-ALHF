@@ -120,7 +120,8 @@ proc __ALHF_SEARCH__ __ALHF_PATH_IDX__, __ALHF_ADDR__ {
     }
 }
 
-proc ALHF_SET_PATH __ALHF_PATH__, __ALHF_VALUE__ {
+%define ALHF_SET_PATH(PATH, VALUE) __ALHF_SET_PATH PATH, VALUE
+proc __ALHF_SET_PATH __ALHF_PATH__, __ALHF_VALUE__ {
     delete __ALHF_PATH__;
     
     local __ALHF_PATH_ELEM__ = "";
@@ -143,17 +144,20 @@ proc ALHF_SET_PATH __ALHF_PATH__, __ALHF_VALUE__ {
     __ALHF_VALUE__ = "";
     __ALHF_ADDR__ = "";
     __ALHF_SEARCH__ 1, 1;
-    repeat __ALHF_DATA__[(__ALHF_ADDR__ + 1)] {
-        delete __ALHF_DATA__[(__ALHF_ADDR__ + 2)];
-    }
-    __ALHF_DATA__[(__ALHF_ADDR__ + 1)] = length __ALHF_ARRAY__;
-    local __I_SET_ARRAY = length __ALHF_ARRAY__;
-    repeat length __ALHF_ARRAY__ {
-        insert __ALHF_ARRAY__[__I_SET_ARRAY] at __ALHF_DATA__[(__ALHF_ADDR__ + 2)]
-        __I_SET_ARRAY--;
-    }
 
-    __ALHF_DATA__[(__ALHF_ADDR__ + 2)]
+    if __ALHF_DATA__[__ALHF_ADDR__] == "AV" {
+        repeat __ALHF_DATA__[(__ALHF_ADDR__ + 1)] {
+            delete __ALHF_DATA__[(__ALHF_ADDR__ + 2)];
+        }
+        __ALHF_DATA__[(__ALHF_ADDR__ + 1)] = length __ALHF_ARRAY__;
+        local __I_SET_ARRAY = length __ALHF_ARRAY__;
+        repeat length __ALHF_ARRAY__ {
+            insert __ALHF_ARRAY__[__I_SET_ARRAY] at __ALHF_DATA__[(__ALHF_ADDR__ + 2)];
+            __I_SET_ARRAY--;
+        }
+    } else {
+        __ALHF_DATA__[__ALHF_ADDR__] = $__ALHF_VALUE__;
+    }
 }
 
 proc ALHF_DESERIALIZE __ALHF_SERIALIZED_DATA__ {
